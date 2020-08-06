@@ -32,7 +32,7 @@ pipeline {
         REPO_URL = 'https://artifactory.puzzle.ch/artifactory/ext-release-local'
     }
     tools {
-        jdk 'jdk8'
+        jdk 'jdk11'
         maven 'maven35'
     }
     stages {

@@ -13,7 +13,7 @@ try {
             node { // with hosted env use node(env.JOB_NAME.split('/')[0])
                 stage('Build') {
                     try {
-                        withEnv(["JAVA_HOME=${tool 'jdk8'}", "PATH+MAVEN=${tool 'maven35'}/bin:${env.JAVA_HOME}/bin"]) {
+                        withEnv(["JAVA_HOME=${tool 'jdk11'}", "PATH+MAVEN=${tool 'maven35'}/bin:${env.JAVA_HOME}/bin"]) {
                             checkout scm
                             sh 'mvn -B -V -U -e clean verify -Dsurefire.useFile=false'
                             archiveArtifacts 'target/*.?ar'
