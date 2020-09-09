@@ -14,7 +14,33 @@ Usually a build is aborted when a failure occurs, with the exception of test fai
 In declarative pipelines error handling is separated from the actual build logic,
 on the other hand failure handling can become quite disruptive in scripted pipelines.
 
-Lab 10.1: Failures
+
+Lab 10.1: Local Rocket.Chat Setup
+------------------
+
+If you use the Local Docker Setup for the Techlab, you need to start a local Rocket.Chat instance and configure the Rocket.Chat Notification plugin.
+
+1. Start the local Rocket.Chat with docker-compose. Depending on your docker installation you need to run whis command with `sudo`:
+`docker-compose -f local_env/rocketchat-compose.yml up -d`
+
+2. Login to Rocket.Chat at http://localhost:3000 with:
+    ```
+    user: admin
+    password: admin
+    ```
+3. Open the Jenkins web interface and press `Manage Jenkins` ➡ `Configure System` and scroll down to `Global RocketChat Notifier Settings`
+4.  Set settings to to 
+    ```
+    Rocket Server URL: http://rocketchat:3000
+    Login Username: admin
+    Login password: admin
+    Channel: GENERAL
+    ```
+5. Click on `Test Connection` if successful, save configuration.
+
+
+
+Lab 10.2: Failures
 ------------------
 
 Declarative pipelines provide the ``post`` section and directives like ``success`` and ``failure``
@@ -48,13 +74,13 @@ pipeline {
     }
     post {
         success {
-            rocketSend avatar: 'https://chat.puzzle.ch/emoji-custom/success.png', channel: 'jenkins-techlab', message: "Build success - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)", rawMessage: true
+            rocketSend avatar: 'https://chat.puzzle.ch/emoji-custom/success.png',  message: "Build success - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)", rawMessage: true
         }
         unstable {
-            rocketSend avatar: 'https://chat.puzzle.ch/emoji-custom/unstable.png', channel: 'jenkins-techlab', message: "Build unstable - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)", rawMessage: true
+            rocketSend avatar: 'https://chat.puzzle.ch/emoji-custom/unstable.png',  message: "Build unstable - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)", rawMessage: true
         }
         failure {
-            rocketSend avatar: 'https://chat.puzzle.ch/emoji-custom/failure.png', channel: 'jenkins-techlab', message: "Build failure - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)", rawMessage: true
+            rocketSend avatar: 'https://chat.puzzle.ch/emoji-custom/failure.png',  message: "Build failure - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)", rawMessage: true
         }
     }
 }
@@ -68,14 +94,16 @@ The ``rawMesssage`` attribute of ``rocketSend`` tells Rocket.Chat not to add con
 
 **Note:** Check the message of your build in the Rocket.Chat channel.
 
-Lab 10.2: Mail notification
+Lab 10.3: Mail notification
 ---------------------------
+
+If you use the local Jenkins environment, you can skip this step and go ahead to Lab 10.4!
 
 Add mail notification to the previous lab. See <https://jenkins.io/doc/pipeline/steps/> for a list of available steps or use the snippet generator.
 
 Verify your scripts with the [solution](solutions/10_3_failures_solution.md).
 
-Lab 10.3: Break the build
+Lab 10.4: Break the build
 ---------------------------
 
 Do a change in branch ``lab-10.1`` such that the message in the chat will be: "Build unstable".
