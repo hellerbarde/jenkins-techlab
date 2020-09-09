@@ -32,13 +32,13 @@ pipeline {
         REPO_URL = 'https://artifactory.puzzle.ch/artifactory/ext-release-local'
     }
     tools {
-        jdk 'jdk8'
+        jdk 'jdk11'
         maven 'maven35'
     }
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -B -V -U -e clean verify -Dsurefire.useFile=false'
+                sh 'mvn -B -V -U -e clean verify -Dsurefire.useFile=false -DargLine="-Djdk.net.URLClassPath.disableClassPathURLCheck=true"'
                 sh "mvn -s '${M2_SETTINGS}' -B deploy:deploy-file -DrepositoryId='puzzle-releases' -Durl='${REPO_URL}' -DgroupId='com.puzzleitc.jenkins-techlab' -DartifactId='${ARTIFACT}' -Dversion='1.0' -Dpackaging='jar' -Dfile=`echo target/*.jar`"
                 sshagent(['testserver']) {  // SSH Agent Plugin
                     sh "ls -l target"

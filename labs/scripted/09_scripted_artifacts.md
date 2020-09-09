@@ -14,9 +14,9 @@ timestamps() {
     timeout(time: 10, unit: 'MINUTES') {
         node { // with hosted env use node(env.JOB_NAME.split('/')[0])
             stage('Build') {
-                withEnv(["JAVA_HOME=${tool 'jdk8'}", "PATH+MAVEN=${tool 'maven35'}/bin:${env.JAVA_HOME}/bin"]) {
+                withEnv(["JAVA_HOME=${tool 'jdk11'}", "PATH+MAVEN=${tool 'maven35'}/bin:${env.JAVA_HOME}/bin"]) {
                     checkout scm
-                    sh 'mvn -B -V -U -e clean verify -Dsurefire.useFile=false'
+                    sh 'mvn -B -V -U -e clean verify -Dsurefire.useFile=false -DargLine="-Djdk.net.URLClassPath.disableClassPathURLCheck=true"'
                     archiveArtifacts 'target/*.?ar'
                     junit 'target/**/*.xml'  // Requires JUnit plugin
                 }
