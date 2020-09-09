@@ -30,9 +30,20 @@ services:
       - jenkins-docker-certs:/certs/client:ro
       - jenkins_slave_docker_workdir:/home/jenkins:z
       - jenkins_slave_docker:/home/jenkins/.jenkins
+  docker:
+    container_name: docker
+    networks:
+      - harbor
+    image: docker:dind
+    command: ["--insecure-registry=proxy:8080"]
+    environment:
+      - DOCKER_TLS_CERTDIR=/certs
+    volumes:
+      - jenkins-docker-certs:/certs/client
+      - jenkins_slave_docker_workdir:/home/jenkins:z
+    privileged: true
 volumes:
   jenkins_master_home:
   jenkins_slave_docker:
   jenkins-docker-certs:
   jenkins_slave_docker_workdir:
-
